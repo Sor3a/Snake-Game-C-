@@ -1,28 +1,54 @@
 #include "Grid.h"
-
-
-Grid::Grid(int x, int y, int screenMiddle):x(x),y(y)
+#include <cstdlib>
+#include <iostream>
+#include <cmath>
+int Grid::x = 0;
+int Grid::y = 0;
+int Grid::screenMiddle = 0;
+Grid::Grid(int x, int y, int screenMiddle)
 {
 	//move it to half of the screen
-
-	sf::RectangleShape* shape = new sf::RectangleShape(sf::Vector2f(x, 10));
-	shape->setPosition(-x / 2 + screenMiddle, -y / 2 + screenMiddle);
-	sf::RectangleShape* shape1 = new sf::RectangleShape(sf::Vector2f(x, 10));
-	shape1->setPosition(-x / 2 + screenMiddle, y / 2 + screenMiddle);
-	shapes.emplace_back(shape);
-	shapes.emplace_back(shape1);
-
-	shape = new sf::RectangleShape(sf::Vector2f(10, y));
-	shape->setPosition(-x / 2 + screenMiddle, -y / 2 + screenMiddle);
-	shape1 = new sf::RectangleShape(sf::Vector2f(10, y+10));
-	shape1->setPosition(x / 2 + screenMiddle, -y / 2 + screenMiddle);
-	shapes.emplace_back(shape);
-	shapes.emplace_back(shape1);
-
-	for (auto& c : shapes)
+	this->x = x;
+	this->y = y;
+	this->screenMiddle = screenMiddle;
+	didUpdate = false;
+	apple = nullptr;
+	grid = std::vector<std::vector<int>>(x, std::vector<int>(y, 0));
+	for (int i = 0; i < y; i++)
 	{
-		c->setFillColor(sf::Color(sf::Color::Magenta));
+		grid[0][i] = 1;
+		auto temp = new sf::RectangleShape(sf::Vector2f(10, 10));
+		temp->setPosition(indexToPosition(sf::Vector2i(0, i)));
+		temp->setFillColor(sf::Color::Magenta);
+		shapes.emplace_back(temp);
+		grid[x-1][i] = 1;
+		temp = new sf::RectangleShape(sf::Vector2f(10, 10));
+		temp->setPosition(indexToPosition(sf::Vector2i(x - 1, i)));
+		temp->setFillColor(sf::Color::Magenta);
+		shapes.emplace_back(temp);
 	}
+	for (int i = 0; i < x; i++)
+	{
+		grid[i][0] = 1;
+		auto temp = new sf::RectangleShape(sf::Vector2f(10, 10));
+		temp->setPosition(indexToPosition(sf::Vector2i(i, 0)));
+		temp->setFillColor(sf::Color::Magenta);
+		shapes.emplace_back(temp);
+		grid[i][y - 1] = 1;
+		temp = new sf::RectangleShape(sf::Vector2f(10, 10));
+		temp->setPosition(indexToPosition(sf::Vector2i(i, y - 1)));
+		temp->setFillColor(sf::Color::Magenta);
+		shapes.emplace_back(temp);
+	}
+
+}
+const sf::Vector2f& Grid::indexToPosition(const sf::Vector2i& index) 
+{
+	return sf::Vector2f(screenMiddle - x*10 / 2 + index.x * 10, screenMiddle - y*10 / 2 + index.y * 10);
+}
+const sf::Vector2i& Grid::PositionToIndex(const sf::Vector2f& position) 
+{
+	return sf::Vector2i((position.x-(screenMiddle - x*10 / 2))/10 , (position.y - (screenMiddle - y*10 / 2)) / 10);
 }
 void Grid::Draw(sf::RenderWindow& window)
 {
@@ -30,24 +56,57 @@ void Grid::Draw(sf::RenderWindow& window)
 	{
 		window.draw(*(c));
 	}
-}
-bool Grid::isOnGrid(sf::Vector2f pos)
-{
-	for (const auto& c : shapes)
+	if (apple != nullptr)
 	{
-		auto currentPos= c->getPosition();
-		float size = c->getSize().x;
-		if (size == 10.0f)
-		{
-			if (pos.x<(currentPos.x+10) && pos.x >(currentPos.x - 10) && pos.y>(currentPos.y - y/2) )
-				return true;
-		}
-		else
-		{
-			if (pos.x >(currentPos.x - x / 2) && pos.y<(currentPos.y + 10) && pos.y >(currentPos.y - 10))
-				return true;
-		}
-
+		window.draw(*(apple));
 	}
-	return false;
+}
+
+bool Grid::isOnGrid(snake& MySnake)
+{
+	auto index = PositionToIndex(MySnake.getHeadPosition());
+	if(index.x<0 || index.y<0 || index.x>=x ||index.y >=y)
+		return true;
+	if (grid[index.x][index.y] == 2)
+	{
+		MySnake.EatApple();
+		deleteApple();
+	}
+	return grid[index.x][index.y]==1;
+}
+void Grid::CreateApple()
+{
+	apple = new sf::RectangleShape(sf::Vector2f(10,10));
+	int newX = abs(rand()) % (x-1);
+	int newY = abs(rand()) % (y - 1);
+	apple->setFillColor(sf::Color::Green);
+	grid[newX][newY] = 2;
+	apple->setPosition(indexToPosition(sf::Vector2i(newX, newY)));
+}
+void Grid::deleteApple()
+{
+	if (apple != nullptr)
+	{
+		auto index = PositionToIndex(apple->getPosition());
+		grid[index.x][index.y] = 0;
+		delete apple;
+		apple = nullptr;
+	}
+}
+
+void Grid::UpdateGrid()
+{
+	if (!didUpdate)
+	{
+		didUpdate = true;
+		appleClock.restart();
+	}
+	//std::cout << appleClock.getElapsedTime().asSeconds() << std::endl;
+	if (appleClock.getElapsedTime().asSeconds() > 5.0f)
+	{
+		
+		deleteApple();
+		CreateApple();
+		didUpdate = false;
+	}
 }

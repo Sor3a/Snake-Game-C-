@@ -144,14 +144,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Assets\Grid\Grid.cpp" />
+    <ClCompile Include="Assets\Scenes\Scene\ReplayGameScene\lostScene.cpp" />
+    <ClCompile Include="Assets\Scenes\Scene\SnakeScene\SnakeScene.cpp" />
     <ClCompile Include="Assets\Snake\Node.cpp" />
     <ClCompile Include="Assets\Snake\snake.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Grid\Grid.h" />
+    <ClInclude Include="Assets\Scenes\SceneManager.h" />
+    <ClInclude Include="Assets\Scenes\Scene\ReplayGameScene\lostScene.h" />
+    <ClInclude Include="Assets\Scenes\Scene\SnakeScene\SnakeScene.h" />
+    <ClInclude Include="Assets\Scenes\Scene\Scene.h" />
     <ClInclude Include="Assets\Snake\Node.h" />
     <ClInclude Include="Assets\Snake\snake.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="arial_narrow_7.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

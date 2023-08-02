@@ -27,10 +27,19 @@ void Node::AddToPosition(const sf::Vector2f& newPos)
 	currentPosition += newPos;
 	shape.setPosition(currentPosition);
 }
+void Node::AddToPosition(const sf::Vector2i& newPos)
+{
+	currentPosition +=sf::Vector2f(newPos.x, newPos.y);
+	shape.setPosition(currentPosition);
+}
 
 void Node::Draw(sf::RenderWindow& window)
 {
 	window.draw(shape);
+}
+void Node::changeColor(sf::Color c)
+{
+	shape.setFillColor(c);
 }
 const sf::Vector2f& Node::getPosition()
 {

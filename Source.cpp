@@ -1,26 +1,25 @@
 
 #include <iostream>
-#include "Assets/Snake/snake.h"
-#include"Assets/Grid/Grid.h"
-
+#include"Assets/Scenes/Scene/SnakeScene/SnakeScene.h"
+#include "Assets/Scenes/SceneManager.h"
+#include"Assets/Scenes/Scene/ReplayGameScene/lostScene.h"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(500, 500), "Snake");
-    //sf::CircleShape shape(100.f);
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Snake");
 
-    //sf::RectangleShape myShape(sf::Vector2f(10, 10));
+    //Scene creations
+    LostScene lostScene;
+    SnakeScene SnakeScene(80,80,500);
+    SceneManager::addScene(&SnakeScene,0);
+    SceneManager::addScene(&lostScene, 1);
+    SceneManager::ChangeScene(0);
+    Scene* scene = SceneManager::getCurrentScene();
+    //scene->Start();
 
-    //shape.setFillColor(sf::Color::Green);
-    //myShape.setFillColor(sf::Color::Blue);
 
-    snake mySnake(100.0f);
-    sf::Clock clock; //for updateFunction and time to update
-    Grid g(300, 300, 250);
-    bool didUpdate = false;
     while (window.isOpen())
     {
-        sf::Time delta = clock.restart();
 
         sf::Event event;
         while (window.pollEvent(event))
@@ -30,20 +29,9 @@ int main()
         }
         window.clear();
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-            mySnake.EatApple();
-        if (g.isOnGrid(mySnake.getHeadPosition()) || mySnake.hitHimSelf())
-        {
-            std::cout << "on" << std::endl;
-        }
-        mySnake.UpdateSnake(delta);
-
-        //if (clock.getElapsedTime().asSeconds() > 0.1f)
-        didUpdate = false;
-
-        mySnake.Draw(window);
-        g.Draw(window);
-
+        scene->Update();
+        scene->Draw(window);
+        scene = SceneManager::getCurrentScene(); // update if the scene has changed
 
         window.display();
     }
