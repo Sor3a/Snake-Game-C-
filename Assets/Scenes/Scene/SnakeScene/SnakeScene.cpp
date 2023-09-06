@@ -4,13 +4,12 @@
 
 void SnakeScene::Start()
 {
-    clock = sf::Clock();
     clock1 = sf::Clock(); 
     g = Grid(x, y, mid);
     mySnake = snake(SnakeSpeed);
 }
 SnakeScene::SnakeScene(int gridX , int gridY, int middleSceen, float snakeSpeed ):
-	clock(), clock1(),g(gridX, gridY, middleSceen),mySnake(snakeSpeed),x(gridX),y(gridY),mid(middleSceen),
+	 clock1(),g(gridX, gridY, middleSceen),mySnake(snakeSpeed),x(gridX),y(gridY),mid(middleSceen),
     SnakeSpeed(snakeSpeed)
 {
 	didUpdate = false;
@@ -18,7 +17,6 @@ SnakeScene::SnakeScene(int gridX , int gridY, int middleSceen, float snakeSpeed 
 
 void SnakeScene::Update()
 {
-	sf::Time delta = clock.restart();
 	if (!didUpdate) {
 		didUpdate = true;
 		clock1.restart();
@@ -31,7 +29,7 @@ void SnakeScene::Update()
         {
             SceneManager::ChangeScene(1);
         }
-        mySnake.UpdateSnake(delta);
+        mySnake.UpdateSnake();
 
         //if (clock.getElapsedTime().asSeconds() > 0.1f)
         didUpdate = false;

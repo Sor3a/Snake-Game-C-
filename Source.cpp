@@ -1,7 +1,6 @@
 
 #include <iostream>
 #include"Assets/Scenes/Scene/SnakeScene/SnakeScene.h"
-#include "Assets/Scenes/SceneManager.h"
 #include"Assets/Scenes/Scene/ReplayGameScene/lostScene.h"
 #include <thread>
 #include <mutex>
@@ -24,17 +23,12 @@ int main()
 
     //Scene creations
     LostScene lostScene;
-    SnakeScene SnakeScene(40,40,250);
+    SnakeScene SnakeScene(40,40,250); //parameters : size of grid x,y and then the middle of the screen
     SceneManager::addScene(&SnakeScene,0);
     SceneManager::addScene(&lostScene, 1);
     SceneManager::ChangeScene(0);
     Scene* scene = SceneManager::getCurrentScene();
-    //scene->Start();
 
-    //auto updateScene = [&](Scene* & scene_)
-    //{
-    //    
-    //};
     bool windowOpen = true;
     std::thread UpdatingSceneThread(updateScene,std::ref(windowOpen),std::ref(scene));
     

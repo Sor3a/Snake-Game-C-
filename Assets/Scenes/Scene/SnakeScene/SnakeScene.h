@@ -12,7 +12,6 @@ public:
 
 private:
 
-	sf::Clock clock;
 	sf::Clock clock1;
 
 	snake mySnake;

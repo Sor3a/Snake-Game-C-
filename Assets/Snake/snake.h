@@ -22,7 +22,7 @@ private:
 public:
 	snake();
 	snake(float s);
-	void UpdateSnake(const sf::Time& delta);
+	void UpdateSnake();
 	void EatApple();
 	void Draw(sf::RenderWindow& window);
 	sf::Vector2f getHeadPosition();

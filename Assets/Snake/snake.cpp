@@ -18,7 +18,7 @@ snake::snake(float s):speed(s)
 
 }
 
-void snake::UpdateSnake(const sf::Time& delta)
+void snake::UpdateSnake()
 {
 	sf::Vector2f oldPos = SnakeHead->getPosition();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) // update the head
